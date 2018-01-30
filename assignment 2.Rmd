@@ -32,3 +32,148 @@ str(ghIndex)
 names(ghIndex)
 ```
 
+```{r}
+summary(ghIndex)
+```
+
+```{r}
+names(ghIndex) <- c("Rank", "Country", "1992", "2000", "2008", "2017")
+```
+
+```{r}
+names(ghIndex)
+```
+
+```{r}
+library(car)
+scatterplotMatrix(ghIndex[,c(3:6)], diagonal='histogram',reg.line=NULL, smoother=NULL)
+```
+
+```{r}
+str(ghIndex)
+```
+
+```{r}
+summary(ghIndex)
+```
+
+Pick one variable to explore: 1992
+```{r}
+summary(ghIndex$'1992',na.rm = T)
+```
+Analyze dispersion
+```{r}
+sd(ghIndex$'1992',na.rm = T)
+```
+
+```{r}
+library(e1071)
+```
+
+
+Analyze Skewness
+```{r}
+skewness(ghIndex$'1992',na.rm = T)
+```
+
+Analyze Kurtosis
+```{r}
+kurtosis(ghIndex$'1992',na.rm = T)
+```
+Next step ?
+```{r}
+data=ghIndex[is.finite(ghIndex$'1992'),]
+```
+selecting a variable
+```{r}
+var=data$'1992'
+```
+saving mean and sd
+```{r}
+mnVar=mean(var,na.rm = T)
+sdVar=sd(var,na.rm = T)
+```
+plotting
+```{r}
+base = ggplot(data, aes(x=var))
+hist = base + geom_histogram(fill="green",
+                             color='grey',
+                             aes(y=..density..))
+```
+next step...?
+```{r}
+histAndNormal = hist + stat_function(fun=dnorm,
+                                     color="red",
+                                     args=list(mean=mnVar,sd=sdVar))
+```
+
+```{r}
+histAndNormal
+```
+
+now histogram with central measures
+```{r}
+mdVar=median(var)
+```
+
+now histogram with central measures
+```{r}
+histAndNormal + geom_vline(aes(xintercept = mnVar, colour="mean"),
+                           show.legend = TRUE) +
+  geom_vline(aes(xintercept = mdVar,colour="median"),
+             show.ledgend = TRUE) +
+  scale_color_manual(name = "centrals",
+                     values = c(median = "blue", mean = "red"))
+```
+Now for outliers
+```{r}
+ghIndex$'1992'=as.numeric(ghIndex$'1992')
+```
+
+```{r}
+summary(ghIndex$'1992')
+```
+looking at 25th and 75th percentile
+```{r}
+(bp=boxplot(ghIndex$'1992',horizontal = T))
+```
+
+```{r}
+bp$stats
+```
+
+compute IQR
+```{r}
+(iqr=IQR(ghIndex$'1992',na.rm = T))
+```
+For 75th Q:
+```{r}
+q75=bp$stats[4]
+(capHigh = q75 + iqr*1.5)
+```
+
+For 25th Q:
+```{r}
+q25=bp$stats[2]
+(capLow=q25 - iqr*1.5)
+```
+
+Any value above the High value (73.575) or below the Low value (15.775) is an outlier
+
+```{r}
+length(bp$out)
+```
+
+```{r}
+StdDev=sd(ghIndex$'1992',na.rm = T)
+Mean=mean(ghIndex$'1992',na.rm = T)
+```
+
+```{r}
+(lowCapT=Mean-2*StdDev)
+```
+
+```{r}
+(upCapT=Mean+2*StdDev)
+```
+
