@@ -1,0 +1,34 @@
+Assignment 2
+```{r}
+library(readxl)
+```
+
+```{r}
+temp = tempfile(fileext = ".xlsx")
+```
+
+```{r}
+dataURL <- "https://raw.githubusercontent.com/popester007/data/master/project%20data%20GHI.csv"
+```
+
+```{r}
+download.file(dataURL, destfile =temp, mode='wb')
+```
+
+```{r}
+ghIndex = read.csv(dataURL)
+```
+
+```{r}
+head(ghIndex,51)
+```
+
+```{r}
+str(ghIndex)
+```
+
+
+```{r}
+names(ghIndex)
+```
+
