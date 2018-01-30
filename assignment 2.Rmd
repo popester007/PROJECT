@@ -95,6 +95,7 @@ sdVar=sd(var,na.rm = T)
 ```
 plotting
 ```{r}
+library(ggplot2)
 base = ggplot(data, aes(x=var))
 hist = base + geom_histogram(fill="green",
                              color='grey',
