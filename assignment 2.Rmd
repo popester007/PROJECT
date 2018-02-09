@@ -1,3 +1,4 @@
+---
 Assignment 2
 ```{r}
 library(readxl)
@@ -176,5 +177,10 @@ Mean=mean(ghIndex$'1992',na.rm = T)
 
 ```{r}
 (upCapT=Mean+2*StdDev)
+```
+
+making maps
+```{r}
+library(utils)
 ```
 
