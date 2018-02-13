@@ -1,0 +1,350 @@
+```{r}
+library(readxl)
+```
+
+```{r}
+temp = tempfile(fileext = ".xlsx")
+```
+
+```{r}
+dataURL <- "https://raw.githubusercontent.com/popester007/data/master/project%20data%20GHI.csv"
+```
+
+```{r}
+download.file(dataURL, destfile =temp, mode='wb')
+```
+
+```{r}
+ghIndex = read.csv(dataURL)
+```
+
+```{r}
+head(ghIndex,51)
+```
+
+```{r}
+str(ghIndex)
+```
+
+```{r}
+names(ghIndex)
+```
+
+```{r}
+summary(ghIndex)
+```
+
+```{r}
+names(ghIndex) <- c("Rank", "Country", "1992", "2000", "2008", "2017")
+```
+
+```{r}
+names(ghIndex)
+```
+
+```{r}
+library(car)
+scatterplotMatrix(ghIndex[,c(3:6)], diagonal='histogram',reg.line=NULL, smoother=NULL)
+```
+
+```{r}
+str(ghIndex)
+```
+
+```{r}
+summary(ghIndex)
+```
+
+Univariate analysis
+```{r}
+summary(ghIndex$'1992',na.rm = T)
+```
+
+Analyze dispersion
+```{r}
+sd(ghIndex$'1992',na.rm = T)
+```
+
+```{r}
+library(e1071)
+```
+
+Analyze skewness
+```{r}
+skewness(ghIndex$'1992',na.rm = T)
+```
+
+Analyze Kurtosis
+```{r}
+kurtosis(ghIndex$'1992',na.rm = T)
+```
+
+```{r}
+data=ghIndex[is.finite(ghIndex$'1992'),]
+```
+
+Select variable
+```{r}
+var=data$'1992'
+```
+
+Saving mean and SD
+```{r}
+mnVar=mean(var,na.rm = T)
+sdVar=sd(var,na.rm = T)
+```
+
+Plotting
+```{r}
+library(ggplot2)
+base = ggplot(data, aes(x=var))
+hist = base + geom_histogram(fill="green",
+                             color='grey',
+                             aes(y=..density..))
+```
+
+```{r}
+histAndNormal = hist + stat_function(fun=dnorm,
+                                     color="red",
+                                     args=list(mean=mnVar,sd=sdVar))
+```
+
+```{r}
+histAndNormal
+```
+
+now histogram with central measures
+```{r}
+mdVar=median(var)
+```
+
+```{r}
+histAndNormal + geom_vline(aes(xintercept = mnVar, colour="mean"),
+                           show.legend = TRUE) +
+  geom_vline(aes(xintercept = mdVar,colour="median"),
+             show.ledgend = TRUE) +
+  scale_color_manual(name = "centrals",
+                     values = c(median = "blue", mean = "red"))
+```
+
+Now for outliers
+```{r}
+ghIndex$'1992'=as.numeric(ghIndex$'1992')
+```
+
+```{r}
+summary(ghIndex$'1992')
+```
+
+Looking at 27th and 75th percentile
+```{r}
+(bp=boxplot(ghIndex$'1992',horizontal = T))
+```
+
+```{r}
+bp$stats
+```
+
+Calculating IQR
+```{r}
+(iqr=IQR(ghIndex$'1992',na.rm = T))
+```
+
+75th Q
+```{r}
+q75=bp$stats[4]
+(capHigh = q75 + iqr*1.5)
+```
+
+For 25th Q
+```{r}
+q25=bp$stats[2]
+(capLow=q25 - iqr*1.5)
+```
+
+Any value above the High value (73.575) or below the Low value (15.775) is an outlier
+```{r}
+length(bp$out)
+```
+
+```{r}
+StdDev=sd(ghIndex$'1992',na.rm = T)
+Mean=mean(ghIndex$'1992',na.rm = T)
+```
+
+```{r}
+(lowCapT=Mean-2*StdDev)
+```
+
+```{r}
+(upCapT=Mean+2*StdDev)
+```
+
+making maps
+```{r}
+compressedMap= 'https://github.com/popester007/PROJECT/blob/master/TM_WORLD_BORDERS_SIMPL-0.3.zip?raw=true'
+temp=tempfile()
+download.file(compressedMap, temp)
+unzip(temp)
+```
+
+```{r}
+(maps=list.files(pattern = 'shp'))
+```
+
+Select Map
+```{r}
+library(rgdal)
+worldMap <- rgdal::readOGR('TM_WORLD_BORDERS_SIMPL-0.3.shp',stringsAsFactors = F)
+```
+
+```{r}
+names(worldMap)
+```
+
+```{r}
+names(ghIndex)
+```
+
+
+```{r}
+worldMapGHI=merge(worldMap,ghIndex, by.x='NAME', by.y='Country',all.x=F)
+```
+
+```{r}
+plot(worldMap,col='black')
+```
+```{r}
+worldMapGHI$`2017`
+```
+
+```{r}
+library(RColorBrewer)
+library(classInt)
+```
+
+
+Making a map to see 2017 data
+
+```{r}
+varToPlot2=worldMapGHI$`2017`
+```
+
+```{r}
+numberOfClasses = 5
+colorForScale='OrRd'
+colors = brewer.pal(numberOfClasses, colorForScale)
+intervals <- classIntervals(varToPlot2, numberOfClasses, 
+                            style = "quantile",
+                            dataPrecision=2)
+colorPallette <- findColours(intervals, colors)
+```
+
+```{r}
+legendText="GHI Index"
+shrinkLegend=0.8
+title="Global Hunger Index in 2017"
+
+plot(worldMap,col='grey',main=title,border=200)
+plot(worldMapGHI, col = colorPallette,border=200,add=T)
+
+legend('left', legend = names(attr(colorPallette, "table")), 
+       fill = attr(colorPallette, "palette"), cex = shrinkLegend, 
+       bty = "n",
+       title=legendText)
+```
+
+Making a map to see 2008 data
+```{r}
+varToPlot3=worldMapGHI$`2008`
+```
+
+```{r}
+numberOfClasses = 5
+colorForScale='OrRd'
+colors = brewer.pal(numberOfClasses, colorForScale)
+intervals <- classIntervals(varToPlot3, numberOfClasses, 
+                            style = "quantile",
+                            dataPrecision=2)
+colorPallette <- findColours(intervals, colors)
+```
+
+```{r}
+legendText="GHI Index"
+shrinkLegend=0.8
+title="Global Hunger Index in 2008"
+
+plot(worldMap,col='grey',main=title, border=200)
+plot(worldMapGHI, col = colorPallette,border=200,add=T)
+
+legend('left', legend = names(attr(colorPallette, "table")), 
+       fill = attr(colorPallette, "palette"), cex = shrinkLegend, 
+       bty = "n",
+       title=legendText)
+```
+
+Making a map for 2000 data
+```{r}
+varToPlot4=worldMapGHI$`2000`
+```
+
+```{r}
+numberOfClasses = 5
+colorForScale='OrRd'
+colors = brewer.pal(numberOfClasses, colorForScale)
+intervals <- classIntervals(varToPlot4, numberOfClasses, 
+                            style = "quantile",
+                            dataPrecision=2)
+colorPallette <- findColours(intervals, colors)
+```
+
+```{r}
+legendText="GHI Index"
+shrinkLegend=0.8
+title="Global Hunger Index in 2000"
+
+plot(worldMap,col='grey',main=title,border=200)
+plot(worldMapGHI, col = colorPallette,border=200,add=T)
+
+legend('left', legend = names(attr(colorPallette, "table")), 
+       fill = attr(colorPallette, "palette"), cex = shrinkLegend, 
+       bty = "n",
+       title=legendText)
+```
+
+
+Making a map for 1992 data
+
+```{r}
+varToPlot5=worldMapGHI$`2000`
+```
+
+```{r}
+numberOfClasses = 5
+colorForScale='OrRd'
+colors = brewer.pal(numberOfClasses, colorForScale)
+intervals <- classIntervals(varToPlot5, numberOfClasses, 
+                            style = "quantile",
+                            dataPrecision=2)
+colorPallette <- findColours(intervals, colors)
+```
+
+```{r}
+legendText="GHI Index"
+shrinkLegend=0.8
+title="Global Hunger Index in 2000"
+
+plot(worldMap,col='grey',main=title,border=200)
+plot(worldMapGHI, col = colorPallette,border=200,add=T)
+
+legend('left', legend = names(attr(colorPallette, "table")), 
+       fill = attr(colorPallette, "palette"), cex = shrinkLegend, 
+       bty = "n",
+       title=legendText)
+```
+
+Make a new variable to calculate the difference between 2017 and 2008, and then map it
+```{r}
+
+```
+
