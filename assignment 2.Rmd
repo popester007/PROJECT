@@ -1,5 +1,10 @@
+
 ---
 Assignment 2
+
+
+
+
 ```{r}
 library(readxl)
 ```
@@ -181,6 +186,10 @@ Mean=mean(ghIndex$'1992',na.rm = T)
 
 making maps
 ```{r}
-library(utils)
+compressedMap= 'https://github.com/popester007/PROJECT/blob/master/TM_WORLD_BORDERS_SIMPL-0.3.zip'
+temp=tempfile()
+download.file(compressedMap, temp)
+unzip(temp)
 ```
+
 

@@ -345,7 +345,11 @@ Mean=mean(ghIndex$'1992',na.rm = T)</code></pre>
 <pre class="r"><code>(upCapT=Mean+2*StdDev)</code></pre>
 <pre><code>## [1] 66.12732</code></pre>
 <p>making maps</p>
-<pre class="r"><code>library(utils)</code></pre>
+<pre class="r"><code>compressedMap= 'https://github.com/popester007/PROJECT/blob/master/TM_WORLD_BORDERS_SIMPL-0.3.zip'
+temp=tempfile()
+download.file(compressedMap, temp)
+unzip(temp)</code></pre>
+<pre><code>## Warning in unzip(temp): error 1 in extracting from zip file</code></pre>
 
 
 
