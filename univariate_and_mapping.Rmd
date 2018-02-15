@@ -7,7 +7,7 @@ temp = tempfile(fileext = ".xlsx")
 ```
 
 ```{r}
-dataURL <- "https://raw.githubusercontent.com/popester007/data/master/project%20data%20GHI.csv"
+dataURL <- "https://github.com/popester007/PROJECT/raw/master/project%20data%20GHI.csv"
 ```
 
 ```{r}
@@ -219,6 +219,11 @@ worldMapGHI$`2017`
 ```
 
 ```{r}
+worldMapGHI$`dif`
+```
+
+
+```{r}
 library(RColorBrewer)
 library(classInt)
 ```
@@ -229,6 +234,11 @@ Making a map to see 2017 data
 ```{r}
 varToPlot2=worldMapGHI$`2017`
 ```
+
+```{r}
+summary(ghIndex$`2017`)
+```
+
 
 ```{r}
 numberOfClasses = 5
@@ -260,6 +270,11 @@ varToPlot3=worldMapGHI$`2008`
 ```
 
 ```{r}
+summary(ghIndex$`2008`)
+```
+
+
+```{r}
 numberOfClasses = 5
 colorForScale='OrRd'
 colors = brewer.pal(numberOfClasses, colorForScale)
@@ -283,10 +298,17 @@ legend('left', legend = names(attr(colorPallette, "table")),
        title=legendText)
 ```
 
+
 Making a map for 2000 data
 ```{r}
 varToPlot4=worldMapGHI$`2000`
 ```
+
+
+```{r}
+summary(ghIndex$`2000`)
+```
+
 
 ```{r}
 numberOfClasses = 5
@@ -316,7 +338,7 @@ legend('left', legend = names(attr(colorPallette, "table")),
 Making a map for 1992 data
 
 ```{r}
-varToPlot5=worldMapGHI$`2000`
+varToPlot5=worldMapGHI$`1992`
 ```
 
 ```{r}
@@ -330,9 +352,14 @@ colorPallette <- findColours(intervals, colors)
 ```
 
 ```{r}
+summary(ghIndex$`1992`)
+```
+
+
+```{r}
 legendText="GHI Index"
 shrinkLegend=0.8
-title="Global Hunger Index in 2000"
+title="Global Hunger Index in 1992"
 
 plot(worldMap,col='grey',main=title,border=200)
 plot(worldMapGHI, col = colorPallette,border=200,add=T)
@@ -344,7 +371,46 @@ legend('left', legend = names(attr(colorPallette, "table")),
 ```
 
 Make a new variable to calculate the difference between 2017 and 2008, and then map it
-```{r}
 
+```{r}
+ghIndex$dif <- (ghIndex$`2017` - ghIndex$`2008`)
 ```
 
+```{r}
+print(ghIndex$dif)
+```
+
+Now map it
+
+```{r}
+varToPlot6=worldMapGHI$`dif`
+```
+
+```{r}
+summary(ghIndex$dif)
+```
+
+
+```{r}
+numberOfClasses = 5
+colorForScale='OrRd'
+colors = brewer.pal(numberOfClasses, colorForScale)
+intervals <- classIntervals(varToPlot6, numberOfClasses, 
+                            style = "quantile",
+                            dataPrecision=2)
+colorPallette <- findColours(intervals, colors)
+```
+
+```{r}
+legendText="GHI Index"
+shrinkLegend=0.8
+title="Global Hunger Index Difference between 2008 and 2017"
+
+plot(worldMap,col='grey',main=title,border=200)
+plot(worldMapGHI, col = colorPallette,border=200,add=T)
+
+legend('left', legend = names(attr(colorPallette, "table")), 
+       fill = attr(colorPallette, "palette"), cex = shrinkLegend, 
+       bty = "n",
+       title=legendText)
+```
