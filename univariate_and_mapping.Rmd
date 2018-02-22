@@ -380,22 +380,75 @@ ghIndex$dif <- (ghIndex$`2017` - ghIndex$`2008`)
 print(ghIndex$dif)
 ```
 
+
+```{r}
+ghIndex$dif2 <- (ghIndex$`2008` - ghIndex$`2017`)
+print(ghIndex$dif2)
+```
+
+
 Now map it
 
 ```{r}
-varToPlot6=worldMapGHI$`dif`
+varToPlot6=worldMapGHI$`dif2`
 ```
 
 ```{r}
-summary(ghIndex$dif)
+summary(ghIndex$dif2)
 ```
 
 
 ```{r}
 numberOfClasses = 5
-colorForScale='OrRd'
-colors = brewer.pal(numberOfClasses, colorForScale)
+colorForScale2='RdYlGn'
+colors = brewer.pal(numberOfClasses, colorForScale2)
 intervals <- classIntervals(varToPlot6, numberOfClasses, 
+                            style = "quantile",
+                            dataPrecision=2)
+colorPallette <- findColours(intervals, colors)
+```
+
+```{r}
+legendText="GHI Index"
+shrinkLegend=0.8
+title="Global Hunger Index Difference between 2008 and 2017"
+
+plot(worldMap,col='grey',main=title,border=200)
+plot(worldMapGHI, col = colorPallette,border=200,add=T)
+
+legend('left', legend = names(attr(colorPallette, "table")), 
+       fill = attr(colorPallette, "palette"), cex = shrinkLegend, 
+       bty = "n",
+       title=legendText)
+```
+```{r}
+str(ghIndex$dif2)
+```
+
+```{r}
+summary(ghIndex$dif2)
+```
+
+
+```{r}
+ghIndex$dif2factor=ghIndex$dif2
+
+ghIndex$dif2factor=ifelse(ghIndex$dif2factor<0,1,
+                          ifelse(ghIndex$dif2factor<10,2,3))
+
+```
+
+```{r}
+varToPlot7=worldMapGHI$dif2factor
+```
+
+
+Now map it
+```{r}
+numberOfClasses = 3
+colorForScale2='RdYlGn'
+colors = brewer.pal(numberOfClasses, colorForScale2)
+intervals <- classIntervals(varToPlot7, numberOfClasses, 
                             style = "quantile",
                             dataPrecision=2)
 colorPallette <- findColours(intervals, colors)

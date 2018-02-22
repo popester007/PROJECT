@@ -1,8 +1,10 @@
 ---
-title: "PUBPOL599B Computational Thinking for Governance Analytics"
-subtitle: "Executive Summary"
-author: "Stephen Pope"
-Date: "February 16, 2018"
+title: "Computational Thinking for Governance Analytics"
+subtitle: |
+    | Stephen Pope
+    | Evans School of Public Policy and Governance
+    | University of Washington
+    | March 8, 2018
 output: pdf_document
 ---
 
@@ -12,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## **Executive Summary**
 
-This PDF was prepared to provide analysis of the **Global Hunger Index (GHI)**. The GHI is a statistical tool to provide insight about the degree of hunger experienced by certain countries. Created by the International Food Policy Research Institute, it demonstrates the successes and shortcomings in global efforts to reduce hunger. Although the GHI is updated once per year, this analysis reviews the GHI for 51 countries in 1992, 2000, 2008, and 2017. The GHI is a powerful tool that ranks countries on a point scale from 0 to 100, with 0 representing the best score (no hunger) and 100 as the worst. Scores under 10 represent low hunger, scores between 10 and 19.9 reflect moderate hunger, scores from 20 to 34.9 reflect serious hunger, values between 35 and 49.9 indicate alarming hunger, and scores above 50 indicate extremely alarming hunger. 
+The World Health Organization estimates that over 800 million people around the world suffer from hunger. The **Global Hunger Index (GHI)** GHI is a statistical tool to provide insight about the degree of hunger experienced by certain countries. Created by the International Food Policy Research Institute (IFPRI), it demonstrates the successes and shortcomings in global efforts to reduce hunger. Although the GHI is updated once per year, this analysis reviews the GHI for 51 countries in 1992, 2000, 2008, and 2017. The GHI is a powerful tool that ranks countries on a point scale from 0 to 100, with 0 representing the best score (no hunger) and 100 as the worst. Scores under 10 represent low hunger, scores between 10 and 19.9 reflect moderate hunger, scores from 20 to 34.9 reflect serious hunger, values between 35 and 49.9 indicate alarming hunger, and scores above 50 indicate extremely alarming hunger. 
 
 ```{r, echo=FALSE}
 library(readxl)
@@ -38,16 +40,16 @@ ghIndex = read.csv(dataURL)
 names(ghIndex) <- c("Rank", "Country", "1992", "2000", "2008", "2017")
 ```
 
-## GHI Top Ten
+## GHI Top Ten List
 
 ```{r, echo=FALSE, warning=FALSE}
 library(knitr) 
 kable(ghIndex[1:10, ], caption = "GHI Top Ten")
 ```
 
-## GHI Histogram Plots
+## 2017 Global Hunger Index
 
-```{r, echo=FALSE, warning=FALSE}
-library(car)
-scatterplotMatrix(ghIndex[,c(3:6)], diagonal='histogram',reg.line=NULL, smoother=NULL)
-```
+The 2017 GHI evaluated 119 countries around the world. According to IFPRI, global hunger degreesed by 27 percent from the 2000 evel. 
+
+
+
