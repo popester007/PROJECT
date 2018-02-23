@@ -184,14 +184,14 @@ q25=bp$stats[2]
 (capLow=q25 - iqr*1.5)
 ```
 
-# Any value above the High value (73.575) or below the Low value (15.775) is an outlier
+# Any value above the High value (73.575) or below the Low value (15.775) is an outlier. The following code displays how many outliers exist for this variable:
 ```{r}
 length(bp$out)
 ```
 
 # In this case, the 1992 does not have any outliers. If we were to repeat this entire process with another variable (year), we might encounter some. 
 
-#
+# If instead we want to find outliers by using the median, we repeate a similar process, but using standard deviations.
 ```{r}
 StdDev=sd(ghIndex$'1992',na.rm = T)
 Mean=mean(ghIndex$'1992',na.rm = T)
@@ -204,3 +204,236 @@ Mean=mean(ghIndex$'1992',na.rm = T)
 ```{r}
 (upCapT=Mean+2*StdDev)
 ```
+
+# Now that we've finished univariate exploration, we can start making maps.
+
+# For this project, the first step to making a map is to find a shapefile of the world and compress it into a zip folder, and then uploading the zip file into GitHub. I've compressed the TM_WORLD_BORDERS_SIMPL (seen below) and loaded it into GitHub for this project.
+
+# Next we will use the zip file from GitHub:
+```{r}
+compressedMap= 'https://github.com/popester007/PROJECT/blob/master/TM_WORLD_BORDERS_SIMPL-0.3.zip?raw=true'
+```
+# Next we load the "utils" package to download the compressed file into your computer and make them available in the directory:
+```{r}
+library(utils)
+temp=tempfile()
+download.file(compressedMap, temp)
+unzip(temp)
+```
+# In order to see what shapefiles are in your directory:
+```{r}
+(maps=list.files(pattern = 'shp'))
+```
+
+# Next, load the "rgdal" package for building geospatial data, and select which map from the object "maps" that we want:
+```{r}
+library(rgdal)
+worldMap <- rgdal::readOGR('TM_WORLD_BORDERS_SIMPL-0.3.shp',stringsAsFactors = F)
+```
+# Now that we have the map, we can use commands to explore what we have:
+```{r}
+names(worldMap)
+```
+# Check the which variables are shared with ghIndex and worldMap
+```{r}
+names(ghIndex)
+```
+# Now we will merge the ghIndex onto the worldMap by common variable
+```{r}
+worldMapGHI=merge(worldMap,ghIndex, by.x='NAME', by.y='Country',all.x=F)
+```
+# To see worldMap in black
+```{r}
+plot(worldMap,col='black')
+```
+
+# We now load RColorBrewer for color palettes and classInt to choose univariate class intervals
+```{r}
+library(RColorBrewer)
+library(classInt)
+```
+
+# Next, define the input we want to map. In this case we will start with the variable "2017"
+```{r}
+varToPlot2=worldMapGHI$`2017`
+```
+# Then we will define colors to intervals. We will use the "OrRd" palette to show the GHI index so that countries with higher indexes show darker red (worse off).
+```{r}
+numberOfClasses = 5
+colorForScale='OrRd'
+colors = brewer.pal(numberOfClasses, colorForScale)
+intervals <- classIntervals(varToPlot2, numberOfClasses, 
+                            style = "quantile",
+                            dataPrecision=2)
+colorPallette <- findColours(intervals, colors)
+```
+
+# Now we can plot the map. 
+```{r}
+legendText="GHI Index"
+shrinkLegend=0.8
+title="Global Hunger Index in 2017"
+
+plot(worldMap,col='grey',main=title,border=200)
+plot(worldMapGHI, col = colorPallette,border=200,add=T)
+
+legend('left', legend = names(attr(colorPallette, "table")), 
+       fill = attr(colorPallette, "palette"), cex = shrinkLegend, 
+       bty = "n",
+       title=legendText)
+```
+
+# We can repeat the same exact process to make maps for each year.
+
+# Making a map to see 2008 data
+```{r}
+varToPlot3=worldMapGHI$`2008`
+```
+
+```{r}
+summary(ghIndex$`2008`)
+```
+# Certain years do not have data, so you may see a warning if n/a's are present
+```{r}
+numberOfClasses = 5
+colorForScale='OrRd'
+colors = brewer.pal(numberOfClasses, colorForScale)
+intervals <- classIntervals(varToPlot3, numberOfClasses, 
+                            style = "quantile",
+                            dataPrecision=2)
+colorPallette <- findColours(intervals, colors)
+```
+
+```{r}
+legendText="GHI Index"
+shrinkLegend=0.8
+title="Global Hunger Index in 2008"
+
+plot(worldMap,col='grey',main=title, border=200)
+plot(worldMapGHI, col = colorPallette,border=200,add=T)
+
+legend('left', legend = names(attr(colorPallette, "table")), 
+       fill = attr(colorPallette, "palette"), cex = shrinkLegend, 
+       bty = "n",
+       title=legendText)
+```
+
+# Now for 2000:
+
+```{r}
+varToPlot4=worldMapGHI$`2000`
+```
+
+
+```{r}
+summary(ghIndex$`2000`)
+```
+
+
+```{r}
+numberOfClasses = 5
+colorForScale='OrRd'
+colors = brewer.pal(numberOfClasses, colorForScale)
+intervals <- classIntervals(varToPlot4, numberOfClasses, 
+                            style = "quantile",
+                            dataPrecision=2)
+colorPallette <- findColours(intervals, colors)
+```
+
+```{r}
+legendText="GHI Index"
+shrinkLegend=0.8
+title="Global Hunger Index in 2000"
+
+plot(worldMap,col='grey',main=title,border=200)
+plot(worldMapGHI, col = colorPallette,border=200,add=T)
+
+legend('left', legend = names(attr(colorPallette, "table")), 
+       fill = attr(colorPallette, "palette"), cex = shrinkLegend, 
+       bty = "n",
+       title=legendText)
+```
+
+# Now for 1992
+
+```{r}
+varToPlot5=worldMapGHI$`1992`
+```
+
+```{r}
+numberOfClasses = 5
+colorForScale='OrRd'
+colors = brewer.pal(numberOfClasses, colorForScale)
+intervals <- classIntervals(varToPlot5, numberOfClasses, 
+                            style = "quantile",
+                            dataPrecision=2)
+colorPallette <- findColours(intervals, colors)
+```
+
+```{r}
+summary(ghIndex$`1992`)
+```
+
+
+```{r}
+legendText="GHI Index"
+shrinkLegend=0.8
+title="Global Hunger Index in 1992"
+
+plot(worldMap,col='grey',main=title,border=200)
+plot(worldMapGHI, col = colorPallette,border=200,add=T)
+
+legend('left', legend = names(attr(colorPallette, "table")), 
+       fill = attr(colorPallette, "palette"), cex = shrinkLegend, 
+       bty = "n",
+       title=legendText)
+```
+
+# Looking at our GHI data, we can see that there is some variation between years: some countries are improving, and some are getting worse. In order to examine this further, we will make a new variable to calculate the difference between 2017 and 2008 data, and then map the differences.
+
+```{r}
+ghIndex$dif2 <- (ghIndex$`2008` - ghIndex$`2017`)
+print(ghIndex$dif2)
+```
+
+# Before we map this, we must assign interval ranges. We want to show that any negative values are one interval, anything between 0 and 10 is another, and anything greater than 10 is another.
+```{r}
+ghIndex$dif2factor=ghIndex$dif2
+
+ghIndex$dif2factor=ifelse(ghIndex$dif2factor<0,1,
+                          ifelse(ghIndex$dif2factor<10,2,3))
+
+```
+
+# Now we will map using the same process as before:
+
+```{r}
+varToPlot7=worldMapGHI$dif2factor
+```
+
+# Now map it
+```{r}
+numberOfClasses = 3
+colorForScale2='RdYlGn'
+colors = brewer.pal(numberOfClasses, colorForScale2)
+intervals <- classIntervals(varToPlot7, numberOfClasses, 
+                            style = "quantile",
+                            dataPrecision=2)
+colorPallette <- findColours(intervals, colors)
+```
+
+```{r}
+legendText="GHI Index"
+shrinkLegend=0.8
+title="Global Hunger Index Difference between 2008 and 2017"
+
+plot(worldMap,col='grey',main=title,border=200)
+plot(worldMapGHI, col = colorPallette,border=200,add=T)
+
+legend('left', legend = names(attr(colorPallette, "table")), 
+       fill = attr(colorPallette, "palette"), cex = shrinkLegend, 
+       bty = "n",
+       title=legendText)
+```
+
+# This is the end of the analysis...for now!
