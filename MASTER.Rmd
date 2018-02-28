@@ -1,39 +1,40 @@
 # PUBPOL599B
 # Master Document
 
-# We are going to open the excel file containing the Global Hunger Index data
-# This Global Hunger Index  was copied from information on Wikipedia's Global Hunger Index Page (https://en.wikipedia.org/wiki/Global_Hunger_Index) and put into an excel spreadsheet.
+We are going to open the excel file containing the Global Hunger Index data
+This Global Hunger Index  was copied from information on Wikipedia's Global Hunger Index Page (https://en.wikipedia.org/wiki/Global_Hunger_Index) and put into an excel spreadsheet.
 
-# First, install "readxl" to open the file
+First, install "readxl" to open the file
 ```{r}
 library(readxl)
 ```
 
-# Whenever we use Excel files, we must use the following:
+Whenever we use Excel files, we must use the following:
 ```{r}
 temp = tempfile(fileext = ".xlsx")
 ```
 
 
-# To ease reproducibility, the excel sheet is stored online on Github. We can get the data from the link to this page:
+To ease reproducibility, the excel sheet is stored online on Github. We can get the data from the link to this page:
 ```{r}
 dataURL <- "https://github.com/popester007/PROJECT/raw/master/project%20data%20GHI.csv"
 ```
 
-# Now, to download the file temporarily:
+Now, to download the file temporarily:
 ```{r}
 download.file(dataURL, destfile=temp, mode='wb')
 ```
-# Now to get the file, which we will call ghIndex
+Now to get the file, which we will call ghIndex
 ```{r}
 ghIndex = read.csv(dataURL)
 ```
-# Display the information:
+
+Display the information using the head() command:
 ```{r}
 head(ghIndex,51)
 ```
 
-# Next we use the str() command to explore what type of variables the data contains:
+Next we use the str() command to explore what type of variables the data contains:
 ```{r}
 str(ghIndex)
 ```
@@ -43,104 +44,108 @@ To view the variable names (column headers), use the names() command
 names(ghIndex)
 ```
 
-# As you can see, the years are displaying with an "X" in front of each variable. We want to rename these to eliminate the "X"
+As you can see, the years are displaying with an "X" in front of each variable. We want to rename these to eliminate the "X"
 ```{r}
 names(ghIndex) <- c("Rank", "Country", "1992", "2000", "2008", "2017")
 ```
 
-# Re-run the names() command to see if the change worked:
+Re-run the names() command to see if the change worked:
 ```{r}
 names(ghIndex)
 ```
 
-# Now, run the summary() command to see some statistics on our variables:
+Now, run the summary() command to see some statistics on our variables:
 ```{r}
 summary(ghIndex)
 ```
 
-# If we want to see a scatterplot of this data, load the "car" package and enter the following code:
+If we want to see a scatterplot of this data, load the "car" package and enter the following code:
 ```{r}
 library(car)
 scatterplotMatrix(ghIndex[,c(3:6)], diagonal='histogram',reg.line=NULL, smoother=NULL)
 ```
 
-# Now we will begin univariate analysis of the "1992" variable of the GHI data. We can replicate this process for any of the "year" variables, but to start we will just look at 1992.
+Now we will begin univariate analysis of the "1992" variable of the GHI data. We can replicate this process for any of the "year" variables, but to start we will just look at 1992.
 
-# To start, we will download the "e1071" package and load it. This package contains a variety of statistical functions we will use:
+To start, we will download the "e1071" package and load it. This package contains a variety of statistical functions we will use:
 ```{r}
 library(e1071)
 ```
 
 
-# Then start with a summary() command to view centrality of the 1992 variable:
+Then start with a summary() command to view centrality of the 1992 variable:
 ```{r}
 summary(ghIndex$'1992',na.rm=T)
 ```
 
-# To analyze dispersion, we run the sd() code to get the standard deviation and coefficient of variation:
+To analyze dispersion, we run the sd() code to get the standard deviation and coefficient of variation:
 ```{r}
 sd(ghIndex$'1992',na.rm = T)
 ```
 
-# Next, we will look at skewness:
+Next, we will look at skewness:
 ```{r}
 skewness(ghIndex$'1992',na.rm = T)
 ```
 
-# Now we will analyze Kurtosis:
+Now we will analyze Kurtosis:
 ```{r}
 kurtosis(ghIndex$'1992',na.rm = T)
 ```
 
-# With these measures calculated, we can now create a histogram for analysis. 
-# Start with the follow code to keep non missing:
+With these measures calculated, we can now create a histogram for analysis. 
+
+Start with the follow code to keep non missing:
 ```{r}
 data=ghIndex[is.finite(ghIndex$'1992'),]
 ```
 
-# Next, we will select the 1992 variable with the following code:
+Next, we will select the 1992 variable with the following code:
 ```{r}
 var=data$'1992'
 ```
 
-# To save the mean and standard deviation:
+To save the mean and standard deviation:
 ```{r}
 mnVar=mean(var,na.rm = T)
 sdVar=sd(var,na.rm = T)
 ```
 
-# Now we will begin visualizing our data. 
-# We start by loading the "ggplot2" package, which is used to create data visualizations. We will make a histogram for the moment.
+Now we will begin visualizing our data. 
+
+We start by loading the "ggplot2" package, which is used to create data visualizations. We will make a histogram for the moment.
 ```{r}
 library(ggplot2)
 ```
 
-# Now, run the following code to create the histogram.
+Now, run the following code to create the histogram.
 ```{r}
 base = ggplot(data, aes(x=var))
 hist = base + geom_histogram(fill="green",
                              color='grey',
                              aes(y=..density..))
 ```
-# Followed by this code:
+
+Followed by this code:
 ```{r}
 histAndNormal = hist + stat_function(fun=dnorm,
                                      color="red",
                                      args=list(mean=mnVar,sd=sdVar))
 ```
-# Now to see the histogram:
+
+Now to see the histogram:
 ```{r}
 histAndNormal
 ```
 
-# Next, we want to view the histogram with central measures.
+Next, we want to view the histogram with central measures.
 
-# We will start with the median:
+We will start with the median:
 ```{r}
 mdVar=median(var)
 ```
 
-# Now we will add vertical lines to mark the median and mean
+Now we will add vertical lines to mark the median and mean
 ```{r}
 histAndNormal + geom_vline(aes(xintercept = mnVar, colour="mean"),
                            show.legend = TRUE) +
@@ -150,48 +155,48 @@ histAndNormal + geom_vline(aes(xintercept = mnVar, colour="mean"),
                      values = c(median = "blue", mean = "red"))
 ```
 
-# Next, we want to identify if there are any outliers in the 1992 variable.
+Next, we want to identify if there are any outliers in the 1992 variable.
 
-# Run the summary() code again:
+Run the summary() code again:
 ```{r}
 summary(ghIndex$'1992')
 ```
 
-# Now, we create a box plot to visualize this information:
+Now, we create a box plot to visualize this information:
 ```{r}
 (bp=boxplot(ghIndex$'1992',horizontal = T))
 ```
 
-# Then, run "bp" to find the quartiles
+Then, run "bp" to find the quartiles
 ```{r}
 bp$stats
 ```
 
-# Next, we calculate the Interquartile Range:
+Next, we calculate the Interquartile Range:
 ```{r}
 (iqr=IQR(ghIndex$'1992',na.rm = T))
 ```
 
-# Now we find the 75th Quartile
+Now we find the 75th Quartile
 ```{r}
 q75=bp$stats[4]
 (capHigh = q75 + iqr*1.5)
 ```
 
-# Then, the 25th Q
+Then, the 25th Q
 ```{r}
 q25=bp$stats[2]
 (capLow=q25 - iqr*1.5)
 ```
 
-# Any value above the High value (73.575) or below the Low value (15.775) is an outlier. The following code displays how many outliers exist for this variable:
+Any value above the High value (73.575) or below the Low value (15.775) is an outlier. The following code displays how many outliers exist for this variable:
 ```{r}
 length(bp$out)
 ```
 
-# In this case, the 1992 does not have any outliers. If we were to repeat this entire process with another variable (year), we might encounter some. 
+In this case, the 1992 does not have any outliers. If we were to repeat this entire process with another variable (year), we might encounter some. 
 
-# If instead we want to find outliers by using the median, we repeate a similar process, but using standard deviations.
+If instead we want to find outliers by using the median, we repeate a similar process, but using standard deviations.
 ```{r}
 StdDev=sd(ghIndex$'1992',na.rm = T)
 Mean=mean(ghIndex$'1992',na.rm = T)
@@ -205,59 +210,63 @@ Mean=mean(ghIndex$'1992',na.rm = T)
 (upCapT=Mean+2*StdDev)
 ```
 
-# Now that we've finished univariate exploration, we can start making maps.
+Now that we've finished univariate exploration, we can start making maps.
 
-# For this project, the first step to making a map is to find a shapefile of the world and compress it into a zip folder, and then uploading the zip file into GitHub. I've compressed the TM_WORLD_BORDERS_SIMPL (seen below) and loaded it into GitHub for this project.
+For this project, the first step to making a map is to find a shapefile of the world and compress it into a zip folder, and then uploading the zip file into GitHub. I've compressed the TM_WORLD_BORDERS_SIMPL (seen below) and loaded it into GitHub for this project.
 
-# Next we will use the zip file from GitHub:
+Next we will use the zip file from GitHub:
 ```{r}
 compressedMap= 'https://github.com/popester007/PROJECT/blob/master/TM_WORLD_BORDERS_SIMPL-0.3.zip?raw=true'
 ```
-# Next we load the "utils" package to download the compressed file into your computer and make them available in the directory:
+
+Next we load the "utils" package to download the compressed file into your computer and make them available in the directory:
 ```{r}
 library(utils)
 temp=tempfile()
 download.file(compressedMap, temp)
 unzip(temp)
 ```
-# In order to see what shapefiles are in your directory:
+In order to see what shapefiles are in your directory:
 ```{r}
 (maps=list.files(pattern = 'shp'))
 ```
 
-# Next, load the "rgdal" package for building geospatial data, and select which map from the object "maps" that we want:
+Next, load the "rgdal" package for building geospatial data, and select which map from the object "maps" that we want:
 ```{r}
 library(rgdal)
 worldMap <- rgdal::readOGR('TM_WORLD_BORDERS_SIMPL-0.3.shp',stringsAsFactors = F)
 ```
-# Now that we have the map, we can use commands to explore what we have:
+Now that we have the map, we can use commands to explore what we have:
 ```{r}
 names(worldMap)
 ```
-# Check the which variables are shared with ghIndex and worldMap
+Check the which variables are shared with ghIndex and worldMap
 ```{r}
 names(ghIndex)
 ```
-# Now we will merge the ghIndex onto the worldMap by common variable
+
+Now we will merge the ghIndex onto the worldMap by common variable
 ```{r}
 worldMapGHI=merge(worldMap,ghIndex, by.x='NAME', by.y='Country',all.x=F)
 ```
-# To see worldMap in black
+
+To see worldMap in black
 ```{r}
 plot(worldMap,col='black')
 ```
 
-# We now load RColorBrewer for color palettes and classInt to choose univariate class intervals
+We now load RColorBrewer for color palettes and classInt to choose univariate class intervals
 ```{r}
 library(RColorBrewer)
 library(classInt)
 ```
 
-# Next, define the input we want to map. In this case we will start with the variable "2017"
+Next, define the input we want to map. In this case we will start with the variable "2017"
 ```{r}
 varToPlot2=worldMapGHI$`2017`
 ```
-# Then we will define colors to intervals. We will use the "OrRd" palette to show the GHI index so that countries with higher indexes show darker red (worse off).
+
+Then we will define colors to intervals. We will use the "OrRd" palette to show the GHI index so that countries with higher indexes show darker red (worse off). You can use other color palletes from BrewerColor (see website).
 ```{r}
 numberOfClasses = 5
 colorForScale='OrRd'
@@ -268,24 +277,24 @@ intervals <- classIntervals(varToPlot2, numberOfClasses,
 colorPallette <- findColours(intervals, colors)
 ```
 
-# Now we can plot the map. 
+Now we can plot the map, including the legend, using the following code. 
 ```{r}
-legendText="GHI Index"
-shrinkLegend=0.8
-title="Global Hunger Index in 2017"
+legendText="GHI Index" #this is the title of the legend
+shrinkLegend=0.8 #this will shrink the legend size
+title="Global Hunger Index in 2017" #this title will appear at the top o the map
 
-plot(worldMap,col='grey',main=title,border=200)
+plot(worldMap,col='grey',main=title,border=200) #this assigns the color of the map, as well as the borders. In this case, we will use a border color that blends into the map color
 plot(worldMapGHI, col = colorPallette,border=200,add=T)
 
-legend('left', legend = names(attr(colorPallette, "table")), 
+legend('left', legend = names(attr(colorPallette, "table")), #we place the legend on the left side
        fill = attr(colorPallette, "palette"), cex = shrinkLegend, 
        bty = "n",
        title=legendText)
 ```
 
-# We can repeat the same exact process to make maps for each year.
+We can repeat the same exact process to make maps for each year.
 
-# Making a map to see 2008 data
+Making a map to see 2008 data
 ```{r}
 varToPlot3=worldMapGHI$`2008`
 ```
@@ -293,7 +302,7 @@ varToPlot3=worldMapGHI$`2008`
 ```{r}
 summary(ghIndex$`2008`)
 ```
-# Certain years do not have data, so you may see a warning if n/a's are present
+Certain years do not have data, so you may see a warning if n/a's are present
 ```{r}
 numberOfClasses = 5
 colorForScale='OrRd'
@@ -318,7 +327,7 @@ legend('left', legend = names(attr(colorPallette, "table")),
        title=legendText)
 ```
 
-# Now for 2000:
+Now for 2000:
 
 ```{r}
 varToPlot4=worldMapGHI$`2000`
@@ -354,7 +363,7 @@ legend('left', legend = names(attr(colorPallette, "table")),
        title=legendText)
 ```
 
-# Now for 1992
+Now for 1992
 
 ```{r}
 varToPlot5=worldMapGHI$`1992`
@@ -374,7 +383,7 @@ colorPallette <- findColours(intervals, colors)
 summary(ghIndex$`1992`)
 ```
 
-
+Now we will create the legend and plot the map
 ```{r}
 legendText="GHI Index"
 shrinkLegend=0.8
@@ -389,51 +398,57 @@ legend('left', legend = names(attr(colorPallette, "table")),
        title=legendText)
 ```
 
-# Looking at our GHI data, we can see that there is some variation between years: some countries are improving, and some are getting worse. In order to examine this further, we will make a new variable to calculate the difference between 2017 and 2008 data, and then map the differences.
+Looking at our GHI data, we can see that there is some variation between years: some countries are improving, and some are getting worse. In order to examine this further, we will make a new variable to calculate the difference between 2017 and 2008 data, and then map the differences.
 
+We start by creating the new variable worldMapGHI$dif2 as the difference between 2017 and 2008
 ```{r}
-ghIndex$dif2 <- (ghIndex$`2008` - ghIndex$`2017`)
-print(ghIndex$dif2)
+worldMapGHI$dif2 <- (worldMapGHI$`2008` - worldMapGHI$`2017`)
+print(worldMapGHI$dif2)
 ```
 
-# Before we map this, we must assign interval ranges. We want to show that any negative values are one interval, anything between 0 and 10 is another, and anything greater than 10 is another.
+Before we map this, we must assign interval ranges. We want to show that any negative values (indicating that GHI worsened) are one interval, anything between 0 and 10 (improving) is another, and anything greater than 10 (significantly improving) is another.
 ```{r}
-ghIndex$dif2factor=ghIndex$dif2
+worldMapGHI$dif2factor=worldMapGHI$dif2
 
-ghIndex$dif2factor=ifelse(ghIndex$dif2factor<0,1,
-                          ifelse(ghIndex$dif2factor<10,2,3))
-
+worldMapGHI$dif2factor=ifelse(worldMapGHI$dif2factor<0,1,
+                          ifelse(worldMapGHI$dif2factor<10,2,3))
 ```
 
-# Now we will map using the same process as before:
 
+Now we will map using the same process as before:
 ```{r}
-varToPlot7=worldMapGHI$dif2factor
+varToPlot7=as.factor(worldMapGHI$dif2factor)
 ```
 
-# Now map it
+In this case, we will use the OrRd color pallete to demonstrate three levels (worse, improving, better), rather than the five levels used in the previous maps. 
 ```{r}
-numberOfClasses = 3
-colorForScale2='RdYlGn'
-colors = brewer.pal(numberOfClasses, colorForScale2)
-intervals <- classIntervals(varToPlot7, numberOfClasses, 
-                            style = "quantile",
-                            dataPrecision=2)
-colorPallette <- findColours(intervals, colors)
+numberOfClasses = length(levels(varToPlot7))
+colorForScale='OrRd'
+colors = brewer.pal(numberOfClasses, colorForScale)
 ```
 
+To reverse the colors used in the legend, use the following code
+```{r}
+rev(colors)
+colors = rev(colors)
+```
+
+Now we will map it
 ```{r}
 legendText="GHI Index"
 shrinkLegend=0.8
 title="Global Hunger Index Difference between 2008 and 2017"
 
 plot(worldMap,col='grey',main=title,border=200)
-plot(worldMapGHI, col = colorPallette,border=200,add=T)
+plot(worldMapGHI, col = colors[varToPlot7],border=200,add=T)
 
-legend('left', legend = names(attr(colorPallette, "table")), 
-       fill = attr(colorPallette, "palette"), cex = shrinkLegend, 
+labels=c("GHI Worsened", "GHI Improved Slightly ", "GHI Improved Significantly")
+
+legend('left', legend = labels, # third change
+      fill = colors, # fourth change
+      cex = shrinkLegend, 
        bty = "n",
        title=legendText)
 ```
 
-# This is the end of the analysis...for now!
+This is the end of the analysis...for now!

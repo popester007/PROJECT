@@ -49,7 +49,68 @@ kable(ghIndex[1:10, ], caption = "GHI Top Ten")
 
 ## 2017 Global Hunger Index
 
-The 2017 GHI evaluated 119 countries around the world. According to IFPRI, global hunger degreesed by 27 percent from the 2000 evel. 
+The 2017 GHI evaluated 119 countries around the world. According to IFPRI, global hunger degreesed by 27 percent from the 2000 level. 
 
 
+```{r, include=FALSE}
+library(rgdal)
+worldMap <- rgdal::readOGR('TM_WORLD_BORDERS_SIMPL-0.3.shp',stringsAsFactors = F)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+worldMapGHI=merge(worldMap,ghIndex, by.x='NAME', by.y='Country',all.x=F)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(RColorBrewer)
+library(classInt)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+worldMapGHI$dif2 <- (worldMapGHI$`2008` - worldMapGHI$`2017`)
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+worldMapGHI$dif2factor=worldMapGHI$dif2
+
+worldMapGHI$dif2factor=ifelse(worldMapGHI$dif2factor<0,1,
+                          ifelse(worldMapGHI$dif2factor<10,2,3))
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+varToPlot7=as.factor(worldMapGHI$dif2factor)
+```
+
+ 
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+numberOfClasses = length(levels(varToPlot7))
+colorForScale='OrRd'
+colors = brewer.pal(numberOfClasses, colorForScale)
+```
+
+
+```{r, include=FALSE}
+rev(colors)
+colors = rev(colors)
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+legendText="GHI Index"
+shrinkLegend=0.8
+title="Global Hunger Index Difference between 2008 and 2017"
+
+plot(worldMap,col='grey',main=title,border=200)
+plot(worldMapGHI, col = colors[varToPlot7],border=200,add=T)
+
+labels=c("GHI Worsened", "GHI Improved Slightly ", "GHI Improved Significantly")
+
+legend('left', legend = labels, # third change
+      fill = colors, # fourth change
+      cex = shrinkLegend, 
+       bty = "n",
+       title=legendText)
+```
 
