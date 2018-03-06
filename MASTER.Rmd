@@ -64,6 +64,7 @@ If we want to see a scatterplot of this data, load the "car" package and enter t
 library(car)
 scatterplotMatrix(ghIndex[,c(3:6)], diagonal='histogram',reg.line=NULL, smoother=NULL)
 ```
+
 ## Univariate Analysis
 Now we will begin univariate analysis of the "1992" variable of the GHI data. We can replicate this process for any of the "year" variables, but to start we will just look at 1992.
 
