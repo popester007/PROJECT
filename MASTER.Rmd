@@ -58,13 +58,13 @@ Now, run the summary() command to see some statistics on our variables:
 ```{r}
 summary(ghIndex)
 ```
-
+## Scatterplot
 If we want to see a scatterplot of this data, load the "car" package and enter the following code:
 ```{r}
 library(car)
 scatterplotMatrix(ghIndex[,c(3:6)], diagonal='histogram',reg.line=NULL, smoother=NULL)
 ```
-
+## Univariate Analysis
 Now we will begin univariate analysis of the "1992" variable of the GHI data. We can replicate this process for any of the "year" variables, but to start we will just look at 1992.
 
 To start, we will download the "e1071" package and load it. This package contains a variety of statistical functions we will use:
@@ -111,6 +111,7 @@ mnVar=mean(var,na.rm = T)
 sdVar=sd(var,na.rm = T)
 ```
 
+## Data Visualization
 Now we will begin visualizing our data. 
 
 We start by loading the "ggplot2" package, which is used to create data visualizations. We will make a histogram for the moment.
@@ -210,6 +211,7 @@ Mean=mean(ghIndex$'1992',na.rm = T)
 (upCapT=Mean+2*StdDev)
 ```
 
+## Geospatial Analysis
 Now that we've finished univariate exploration, we can start making maps.
 
 For this project, the first step to making a map is to find a shapefile of the world and compress it into a zip folder, and then uploading the zip file into GitHub. I've compressed the TM_WORLD_BORDERS_SIMPL (seen below) and loaded it into GitHub for this project.
