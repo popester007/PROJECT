@@ -14,7 +14,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## **Executive Summary**
 
-The World Health Organization estimates that over 800 million people around the world suffer from hunger. The **Global Hunger Index (GHI)** GHI is a statistical tool to provide insight about the degree of hunger experienced by certain countries. Created by the International Food Policy Research Institute (IFPRI), it demonstrates the successes and shortcomings in global efforts to reduce hunger. Although the GHI is updated once per year, this analysis reviews the GHI for 51 countries in 1992, 2000, 2008, and 2017. The GHI is a powerful tool that ranks countries on a point scale from 0 to 100, with 0 representing the best score (no hunger) and 100 as the worst. Scores under 10 represent low hunger, scores between 10 and 19.9 reflect moderate hunger, scores from 20 to 34.9 reflect serious hunger, values between 35 and 49.9 indicate alarming hunger, and scores above 50 indicate extremely alarming hunger. 
+The World Health Organization estimates that over 800 million people around the world suffer from hunger. The **Global Hunger Index (GHI)** GHI is a statistical tool which uses the prevalence of undernourishment, child wasting, child stunting, and child mortality to provide insight about the degree of hunger experienced by certain countries. Created by the International Food Policy Research Institute (IFPRI), it demonstrates the successes and shortcomings in global efforts to reduce hunger. Although the GHI is updated once per year, this analysis reviews the GHI for 51 countries in 1992, 2000, 2008, and 2017. The GHI is a powerful tool that ranks countries on a point scale from 0 to 100, with 0 representing the best score (no hunger) and 100 as the worst. Scores under 10 represent low hunger, scores between 10 and 19.9 reflect moderate hunger, scores from 20 to 34.9 reflect serious hunger, values between 35 and 49.9 indicate alarming hunger, and scores above 50 indicate extremely alarming hunger. 
+
+## Univariate Analysis: 1992
+
+Based on the 51 countries in this analysis, the mean GHI score during 1992 was 44.80, while the median was 44.50, with a standard deviation of 10.67
+
 
 ```{r, echo=FALSE}
 library(readxl)
@@ -40,16 +45,75 @@ ghIndex = read.csv(dataURL)
 names(ghIndex) <- c("Rank", "Country", "1992", "2000", "2008", "2017")
 ```
 
-## GHI Top Ten List
-
-```{r, echo=FALSE, warning=FALSE}
-library(knitr) 
-kable(ghIndex[1:10, ], caption = "GHI Top Ten")
+```{r, include=FALSE}
+summary(ghIndex$'1992',na.rm = T) #univariate analysis
 ```
+
+
+```{r, include=FALSE}
+sd(ghIndex$'1992',na.rm = T)
+```
+
+```{r, include=FALSE}
+library(e1071)
+```
+
+```{r, include=FALSE}
+skewness(ghIndex$'1992',na.rm = T)
+```
+
+```{r, include=FALSE}
+kurtosis(ghIndex$'1992',na.rm = T)
+```
+
+```{r, include=FALSE}
+data=ghIndex[is.finite(ghIndex$'1992'),]
+```
+
+```{r, include=FALSE}
+var=data$'1992'
+```
+
+```{r, include=FALSE}
+mnVar=mean(var,na.rm = T)
+sdVar=sd(var,na.rm = T)
+```
+
+```{r, include=FALSE}
+library(ggplot2)
+base = ggplot(data, aes(x=var))
+hist = base + geom_histogram(fill="green",
+                             color='grey',
+                             aes(y=..density..))
+```
+
+```{r, include=FALSE}
+histAndNormal = hist + stat_function(fun=dnorm,
+                                     color="red",
+                                     args=list(mean=mnVar,sd=sdVar))
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+mdVar=median(var)
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+histAndNormal + geom_vline(aes(xintercept = mnVar, colour="mean"),
+                           show.legend = TRUE) +
+  geom_vline(aes(xintercept = mdVar,colour="median"),
+             show.ledgend = TRUE) +
+  scale_color_manual(name = "centrals",
+                     values = c(median = "blue", mean = "red"))
+```
+\clearpage
 
 ## 2017 Global Hunger Index
 
-The 2017 GHI evaluated 119 countries around the world. According to IFPRI, global hunger degreesed by 27 percent from the 2000 level. 
+The 2017 GHI evaluated 119 countries around the world. According to IFPRI, the average GHI score for 2017 was 21.8 out of 100, representing **a 27 percent decrease from the 2000 average** score of 29.9. Moreover, improvements were seen across each of the four GHI indicators, and over 14 countries improved their GHI rankings by 50% of more, including Senegal, Azerbaijan, Peru, Pana, Brazil, and China.  
+
+
+## Areas of Concern 
+Although the 2017 GHI demonstrates strong signs of improvement, several countries continue to suffer from persistent hunger. The GHI highlights several countries where progress towards reducing hunger is lagging. One country, the Central African Republic, ranked as "extremely alarming", while weven countries fell into the "alarming" range, and another 44 ranked as "serious." In fact, Central African Republic, Madagascar, Mauritania, and Sri Lanka **all have higher GHI levels compared to their 2008 scores**. Furthermore, the 2017 GHI was published prior to several 
 
 
 ```{r, include=FALSE}
@@ -113,4 +177,7 @@ legend('left', legend = labels, # third change
        bty = "n",
        title=legendText)
 ```
+
+## Considerations
+While global hunger outcomes are improving overall, several countires continue to struggle from persistent hunger. The 2017 GHI highlights multiple countries where hunger reduction progress has reversed, and further analysis is needed to identify the drivers of these reversals. In addition, the 2017 GHI was published prior to several hunger crises which occurred throughout 2017. South Sudan declared famine in early 2017, marking the first instance of famine in the world in over six years. Furthermore, Somalia, Yemen, and Nigeria were also on the brink of famine during 2017. Increasing investments in food security not only reduces hunger, but also improves national security of vulnerable states such as South Sudan, Somalia, and Yemen by reducing conflict resulting from food shortages.
 
