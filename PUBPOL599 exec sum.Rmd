@@ -8,7 +8,7 @@ subtitle: |
 output: pdf_document
 ---
 
-```{r setup, include=FALSE, message=FALSE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -181,3 +181,4 @@ legend('left', legend = labels, # third change
 ## Considerations
 While global hunger outcomes are improving overall, several countires continue to struggle from persistent hunger. The 2017 GHI highlights multiple countries where hunger reduction progress has reversed, and further analysis is needed to identify the drivers of these reversals. In addition, the 2017 GHI was published prior to several hunger crises which occurred throughout 2017. South Sudan declared famine in early 2017, marking the first instance of famine in the world in over six years. Furthermore, Somalia, Yemen, and Nigeria were also on the brink of famine during 2017. Increasing investments in food security not only reduces hunger, but also improves national security of vulnerable states such as South Sudan, Somalia, and Yemen by reducing conflict resulting from food shortages.
 
+\clearpage
