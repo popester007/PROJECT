@@ -2,8 +2,7 @@
 title: "Computational Thinking for Governance Analytics"
 subtitle: |
     | Stephen Pope
-    | Evans School of Public Policy and Governance
-    | University of Washington
+    | University of Washington Evans School of Public Policy and Governance
     | March 8, 2018
 output: pdf_document
 ---
@@ -14,11 +13,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## **Executive Summary**
 
-The World Health Organization estimates that over 800 million people around the world suffer from hunger. The **Global Hunger Index (GHI)** GHI is a statistical tool which uses the prevalence of undernourishment, child wasting, child stunting, and child mortality to provide insight about the degree of hunger experienced by certain countries. Created by the International Food Policy Research Institute (IFPRI), it demonstrates the successes and shortcomings in global efforts to reduce hunger. Although the GHI is updated once per year, this analysis reviews the GHI for 51 countries in 1992, 2000, 2008, and 2017. The GHI is a powerful tool that ranks countries on a point scale from 0 to 100, with 0 representing the best score (no hunger) and 100 as the worst. Scores under 10 represent low hunger, scores between 10 and 19.9 reflect moderate hunger, scores from 20 to 34.9 reflect serious hunger, values between 35 and 49.9 indicate alarming hunger, and scores above 50 indicate extremely alarming hunger. 
+The World Health Organization estimates that over 800 million people around the world suffer from hunger. The **Global Hunger Index (GHI)** GHI is a statistical tool which uses the prevalence of undernourishment, child wasting, child stunting, and child mortality to provide insight about the degree of hunger experienced by each country. Created by the International Food Policy Research Institute, it demonstrates the successes and shortcomings in global efforts to reduce hunger. Although the GHI is updated once per year, this analysis reviews the GHI for 51 countries in 1992, 2000, 2008, and 2017. The GHI is a powerful tool that ranks countries on a point scale from 0 to 100, with 0 representing the best score (no hunger) and 100 as the worst. Scores under 10 represent low hunger, between 10 and 19.9 reflect moderate hunger, from 20 to 34.9 reflects serious hunger, between 35 and 49.9 indicates alarming hunger, and above 50 indicates extremely alarming hunger. 
 
 ## Univariate Analysis: 1992
 
-Based on the 51 countries in this analysis, the mean GHI score during 1992 was 44.80, while the median was 44.50, with a standard deviation of 10.67
+Based on the 51 countries in this analysis, the mean GHI score during 1992 was 44.80, the median was 44.50, and the standard deviation is 10.67. Angola ranked as the country with the highest GHI with a score of 65.8 (extremely alarming), while Iraq scored the lowest with 21.8 (serious hunger).
 
 
 ```{r, echo=FALSE}
@@ -109,7 +108,7 @@ histAndNormal + geom_vline(aes(xintercept = mnVar, colour="mean"),
 
 ## 2017 Global Hunger Index
 
-The 2017 GHI evaluated 119 countries around the world. According to IFPRI, the average GHI score for 2017 was 21.8 out of 100, representing **a 27 percent decrease from the 2000 average** score of 29.9. Moreover, improvements were seen across each of the four GHI indicators, and over 14 countries improved their GHI rankings by 50% of more, including Senegal, Azerbaijan, Peru, Pana, Brazil, and China.  
+The 2017 GHI evaluated 119 countries around the world. According to IFPRI, the average GHI score for 2017 was 21.8 out of 100, representing **a 27 percent decrease from the 2000 average** score of 29.9. Moreover, improvements were seen across each of the four GHI indicators, and over 14 countries improved their GHI rankings by 50% or more, including Senegal, Azerbaijan, Peru, Pana, Brazil, and China.  
 
 
 ## Areas of Concern 
@@ -178,7 +177,7 @@ legend('left', legend = labels, # third change
        title=legendText)
 ```
 
-## Considerations
+## Considerations of the Data
 While global hunger outcomes are improving overall, several countires continue to struggle from persistent hunger. The 2017 GHI highlights multiple countries where hunger reduction progress has reversed, and further analysis is needed to identify the drivers of these reversals. In addition, the 2017 GHI was published prior to several hunger crises which occurred throughout 2017. South Sudan declared famine in early 2017, marking the first instance of famine in the world in over six years. Furthermore, Somalia, Yemen, and Nigeria were also on the brink of famine during 2017. Increasing investments in food security not only reduces hunger, but also improves national security of vulnerable states such as South Sudan, Somalia, and Yemen by reducing conflict resulting from food shortages.
 
 \clearpage
