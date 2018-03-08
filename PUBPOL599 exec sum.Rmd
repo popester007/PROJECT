@@ -112,7 +112,7 @@ The 2017 GHI evaluated 119 countries around the world. According to IFPRI, the a
 
 
 ## Areas of Concern 
-Although the 2017 GHI demonstrates strong signs of improvement, several countries continue to suffer from persistent hunger. The GHI highlights several countries where progress towards reducing hunger is lagging. One country, the Central African Republic, ranked as "extremely alarming", while weven countries fell into the "alarming" range, and another 44 ranked as "serious." In fact, Central African Republic, Madagascar, Mauritania, and Sri Lanka **all have higher GHI levels compared to their 2008 scores**.
+Although the 2017 GHI demonstrates strong signs of improvement, several countries continue to suffer from persistent hunger. The GHI highlights several countries where progress towards reducing hunger is lagging. One country, the Central African Republic, ranked as "extremely alarming", while seven countries fell into the "alarming" range, and another 44 ranked as "serious." In fact, Central African Republic, Madagascar, Mauritania, and Sri Lanka **all have higher GHI levels compared to their 2008 scores**.
 
 
 ```{r, include=FALSE}
